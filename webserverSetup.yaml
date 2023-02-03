@@ -1,0 +1,34 @@
+- name: Install application for webservers
+  hosts: webservers
+  become: yes
+  tasks:
+  - include_tasks: tasks/install-nginx.yaml
+  - include_tasks: tasks/install-docker.yaml
+  - name: Write test configguration
+    copy:
+      dest: /etc/nginx/conf.d/ujjwol.conf
+      content: | 
+        server{
+          server_name ujjwol.com;
+          root /var/www/html/ujjwol.com;
+          index index.html;
+
+          location /{
+            try_files $uri $uri/ index.html;
+          }
+        }
+  - name: Create folder
+    file:
+      path: /var/www/html/ujjwol.com
+      state: directory
+  
+  - name: Create index.html file for ujjwol.com
+    copy:
+      dest: /var/www/html/ujjwol.com/index.html
+      content: |
+        <html>
+        <head></head>
+        <body><h1>hello from ansible</h1></body>
+        </html>
+
+      

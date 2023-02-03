@@ -1,0 +1,27 @@
+- name: Added nginx source list
+  copy:
+    dest: /etc/apt/sources.list.d/nginx.list
+    content: | 
+      deb https://nginx.org/packages/ubuntu/ {{ansible_distribution_release}} nginx
+      deb-src https://nginx.org/packages/ubuntu/ {{ansible_distribution_release}} nginx
+- name: Registering GPG keys for nginx
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+- name: Install nginx
+  apt:
+    update_cache: yes
+    name: nginx
+    state: present
+
+- name: start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+        
